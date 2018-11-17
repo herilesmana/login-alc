@@ -39,15 +39,35 @@ $jumlah = mysqli_num_rows($query);
 		.pause {
 			display: none
 		}
-
+		video {
+			   position: fixed; right: 0;
+			   bottom: 0;
+			   min-width: 100%;
+			   min-height: 100%;
+			   width: auto;
+			   height: auto;
+			   z-index: 100;
+			   background: url(polina.jpg) no-repeat; background-size: cover;
+			   display: none
+		}
 	</style>
 </head>
 <body style="background: url(./images/background.png) center fixed;background-size: cover;">
-	<div style="height: 200px; background: transparent">
+<video id="videoplay" controls="controls">
+    <source src="video/haneen.mp4" type="video/mp4">
+</video>
+	<div class="bagian" style="height: 200px; background: transparent">
+		<div id="modal" class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+		  <div class="modal-dialog modal-sm">
+		    <div class="modal-content">
+		      <button class="btn btn-primary" id="launch">Lounch</button>
+		    </div>
+		  </div>
+		</div>
 		<div class="container-fluid">
 			<div class="row">
 				<input type="hidden" name="" class="jumlah_semua">
-				<input type="text" value="0" class="saat_ini">
+				<input type="hidden" value="0" class="saat_ini">
 				<?php while ($approver = mysqli_fetch_assoc($query)) { ?>
 				<div id="<?php echo $approver['card_number']; ?>" class="col-md-2 animated avatar-container">
 					<div class="avatar">
@@ -62,7 +82,7 @@ $jumlah = mysqli_num_rows($query);
 			</div>
 		</div>
 	</div>
-	<div style="height: 200px; background: transparent">
+	<div class="bagian" style="height: 200px; background: transparent">
 		<div class="col-md-6 grid-margin stretch-card" style="margin: 10px auto">
           <div class="card" style="background: transparent;">
             <div class="card-body">
@@ -83,12 +103,21 @@ $jumlah = mysqli_num_rows($query);
           </div>
         </div>
 	</div>
-	<div style="height: 200px; background: transparent">
+	<div class="bagian" style="height: 200px; background: transparent">
 
 	</div>
 </body>
 <script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/popper.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
 <script type="text/javascript">
+	$('#launch').click( function () {
+		var video = document.getElementById('videoplay');
+		$('#modal').modal('hide');
+		$('video').show();
+		video.play();
+		video.webkitRequestFullScreen();
+	})
 	$('.jumlah_semua').val('<?php echo $jumlah; ?>');
 	$('#form').submit(function (event) {
 		event.preventDefault();
@@ -100,12 +129,16 @@ $jumlah = mysqli_num_rows($query);
 			$('#'+card_number).addClass('flipInY');
 			var audio3 = document.getElementById('audio'+$('#card-number').val());
 			audio3.play();
+			pause();
 		}
 		$('#card-number').val('');
 		var saat_ini = parseInt($('.saat_ini').val()) + 1;
 		$('.saat_ini').val(saat_ini);
+		if ($('.saat_ini').val() == $('.jumlah_semua').val() ) {
+			$('#modal').modal('show')
+		}
 	})
-	$('body').click( function () {
+	$('.bagian').click( function () {
 		$('#card-number').focus();
 	})
 	document.addEventListener('play', function(e){
@@ -122,6 +155,11 @@ $jumlah = mysqli_num_rows($query);
 	setTimeout(function(){
 		$('.player').addClass('pause');
 	}, 25000)
-
+	function pause()
+	{
+		setTimeout(function(){
+			$('.player').addClass('pause');
+		}, 3000)
+	}
 </script>
 </html>
